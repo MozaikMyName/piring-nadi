@@ -1,0 +1,17 @@
+# Piring Nadi - Pemantauan Asupan Gizi Harian
+
+## Anggota Kelompok 3
+1. Mozaik Alismatus Karyanto Putri
+2. Avrielia ferlina eka widya putri
+3. Jeanny dylan basuki
+4. Intan risna wati
+
+## Requirements
+- Java 25
+- JavaFX SDK 26.0.1
+- MySQL Connector JAR
+- NetBeans IDE
+- XAMPP / MySQL
+
+## Commit
+Progress Aplikasi Tugas Besar 1
