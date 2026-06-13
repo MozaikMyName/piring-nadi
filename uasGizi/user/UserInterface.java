@@ -1,4 +1,4 @@
-package uasGizi;
+package uasGizi.user;
 
 import java.sql.SQLException;
 import java.util.List;

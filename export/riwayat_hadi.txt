@@ -1,0 +1,12 @@
+============================
+RIWAYAT ASUPAN GIZI
+Nama  : Hadi purnomo
+============================
+Tanggal      | Makanan              | Berat  | Kalori  | Protein   | Lemak    | Karbo   
+--------------------------------------------------------------------
+2026-06-11   | CheseeCake           | 300g   | 960     | 45,0g     | 60,0g    | 135,0g  
+2026-06-08   | Mie Gacoan           | 150g   | 450     | 75,0g     | 1200,0g  | 75,0g   
+2026-06-04   | salad dada ayam      | 300g   | 6000    | 450,0g    | 0,0g     | 0,0g    
+============================
+Total Semua: 7410 kkal | Protein: 570,0g | Lemak: 1260,0g | Karbo: 210,0g
+============================

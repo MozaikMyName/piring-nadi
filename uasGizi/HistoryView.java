@@ -1,5 +1,11 @@
 package uasGizi;
 
+import uasGizi.user.User;
+import uasGizi.makanan.MakananImplement;
+import uasGizi.makanan.Makanan;
+import uasGizi.log.Log;
+import uasGizi.log.LogDetail;
+import uasGizi.log.LogImplement;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,6 +17,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class HistoryView {
     private User user;
@@ -121,15 +131,68 @@ public class HistoryView {
             DashboardView dv = new DashboardView(user);
             dv.show(stage);
         });
+        
+        Button exportBtn = new Button("Export ke .txt");
+        exportBtn.setPrefWidth(250);
+        exportBtn.setPrefHeight(40);
+        exportBtn.setStyle("-fx-background-color: #2E7D32; -fx-text-fill: white; " +
+                "-fx-background-radius: 8; -fx-font-size: 13; -fx-cursor: hand;");
 
+        exportBtn.setOnAction(e -> {
+            try {
+                String folderPath = "D:/piring-nadi/export/";
+                new java.io.File(folderPath).mkdirs();
+                String namaFile = folderPath + "riwayat_" + user.getUsername() + ".txt";
+                PrintWriter pw = new PrintWriter(new FileWriter(namaFile));
+
+                pw.println("============================");
+                pw.println("RIWAYAT ASUPAN GIZI");
+                pw.println("Nama  : " + user.getNama());
+                pw.println("============================");
+                pw.printf("%-12s | %-20s | %-6s | %-7s | %-9s | %-8s | %-8s%n",
+                    "Tanggal", "Makanan", "Berat", "Kalori", "Protein", "Lemak", "Karbo");
+                pw.println("--------------------------------------------------------------------");
+
+                for (LogDetail ld : table.getItems()) {
+                    pw.printf("%-12s | %-20s | %-6s | %-7s | %-9s | %-8s | %-8s%n",
+                        ld.getTanggal(),
+                        ld.getNamaMakanan(),
+                        ld.getBeratGram() + "g",
+                        ld.getTotalKalori(),
+                        ld.getTotalProtein() + "g",
+                        ld.getTotalLemak() + "g",
+                        ld.getTotalKarbo() + "g"
+                    );
+                }
+
+                pw.println("============================");
+                pw.println(totalLabel.getText());
+                pw.println("============================");
+                pw.close();
+
+                Alert info = new Alert(Alert.AlertType.INFORMATION);
+                info.setTitle("Export Berhasil");
+                info.setHeaderText(null);
+                info.setContentText("Riwayat berhasil disimpan ke file:\n" + namaFile);
+                info.showAndWait();
+
+            } catch (IOException ex) {
+                Alert err = new Alert(Alert.AlertType.ERROR);
+                err.setTitle("Export Gagal");
+                err.setHeaderText(null);
+                err.setContentText("Error: " + ex.getMessage());
+                err.showAndWait();
+            }
+        });
+        
         VBox root = new VBox(15);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(30));
         root.setStyle("-fx-background-color: #F0F4F0;");
-        root.getChildren().addAll(titleLabel, table, totalLabel, backBtn);
+        root.getChildren().addAll(titleLabel, table, totalLabel, exportBtn, backBtn);
 
         Scene scene = new Scene(root, 750, 500);
-        stage.setTitle("NutriTrack - Riwayat Harian");
+        stage.setTitle("Piring Nadi - Riwayat Harian");
         stage.setScene(scene);
         stage.show();
     }

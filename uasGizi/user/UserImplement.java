@@ -1,4 +1,4 @@
-package uasGizi;
+package uasGizi.user;
 
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -6,11 +6,15 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import uasGizi.DBConnection;
 
 public class UserImplement implements UserInterface {
+    
     @Override
     public User insert(User u) throws SQLException {
-        PreparedStatement st = DBConnection.getConnection().prepareStatement("INSERT INTO user values (0,?,?,?,?,?,?,?,?)");
+        PreparedStatement st = DBConnection.getConnection().prepareStatement(
+            "INSERT INTO user (username, password, nama, usia, berat_kg, tinggi_cm, gender, aktivitas, tujuan) " +
+            "VALUES(?,?,?,?,?,?,?,?,?)");
         st.setString(1, u.getUsername());
         st.setString(2, u.getPassword());
         st.setString(3, u.getNama());
@@ -19,6 +23,7 @@ public class UserImplement implements UserInterface {
         st.setFloat(6, u.getTinggiCm());
         st.setString(7, u.getGender());
         st.setString(8, u.getAktivitas());
+        st.setString(9, u.getTujuan());
         st.executeUpdate();
         DBConnection.conn.close();
         return u;
@@ -41,6 +46,8 @@ public class UserImplement implements UserInterface {
             u.setTinggiCm(rs.getFloat("tinggi_cm"));
             u.setGender(rs.getString("gender"));
             u.setAktivitas(rs.getString("aktivitas"));
+            u.setTujuan(rs.getString("tujuan"));
+            u.setTargetKalori(rs.getFloat("target_kalori"));
         }
         DBConnection.conn.close();
         return u;
@@ -48,14 +55,17 @@ public class UserImplement implements UserInterface {
     
     @Override
     public void update(User u) throws SQLException {
-        PreparedStatement st = DBConnection.getConnection().prepareStatement("UPDATE user SET nama=?, usia=?, berat_kg=?, tinggi_cm=?, gender=?, aktivitas=?, WHERE id=?");
+        PreparedStatement st = DBConnection.getConnection().prepareStatement(
+            "UPDATE user SET nama=?, usia=?, berat_kg=?, tinggi_cm=?, gender=?, aktivitas=?, tujuan=?, target_kalori=? WHERE id=?");
         st.setString(1, u.getNama());
         st.setInt(2, u.getUsia());
         st.setFloat(3, u.getBeratKg());
         st.setFloat(4, u.getTinggiCm());
         st.setString(5, u.getGender());
         st.setString(6, u.getAktivitas());
-        st.setInt(7, u.getId());
+        st.setString(7, u.getTujuan());
+        st.setFloat(8, u.getTargetKalori());
+        st.setInt(9, u.getId());
         st.executeUpdate();
         DBConnection.conn.close();
     }

@@ -1,5 +1,6 @@
 package uasGizi;
 
+import uasGizi.user.User;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,33 +21,13 @@ public class DashboardView {
     public void show(Stage stage) {
         Label namaLabel = new Label("Halo, " + user.getNama() + "!");
         namaLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
-        namaLabel.setTextFill(Color.web("#2E7D32"));
+        namaLabel.setTextFill(Color.web("#F19CBB"));
 
         Label subLabel = new Label("Pantau asupan gizimu hari ini");
         subLabel.setFont(Font.font("Arial", 13));
         subLabel.setTextFill(Color.web("#888888"));
-
-        double bmr;
-        if (user.getGender().equals("Laki-laki")) {
-            bmr = 88.362 + (13.397 * user.getBeratKg())
-                + (4.799 * user.getTinggiCm())
-                - (5.677 * user.getUsia());
-        } else {
-            bmr = 447.593 + (9.247 * user.getBeratKg())
-                + (3.098 * user.getTinggiCm())
-                - (4.330 * user.getUsia());
-        }
-
-        double multiplier;
-        switch (user.getAktivitas()) {
-            case "Ringan": multiplier = 1.375; break;
-            case "Sedang": multiplier = 1.55; break;
-            case "Aktif": multiplier = 1.725; break;
-            case "Sangat Aktif": multiplier = 1.9; break;
-            default: multiplier = 1.2; break;
-        }
-
-        int targetKalori = (int)(bmr * multiplier);
+        
+        int targetKalori = (int) user.getTargetKalori();
         int targetProtein = (int)(targetKalori * 0.20 / 4);
         int targetLemak = (int)(targetKalori * 0.25 / 9);
         int targetKarbo = (int)(targetKalori * 0.55 / 4);
@@ -54,29 +35,50 @@ public class DashboardView {
         HBox cardBox = new HBox(15);
         cardBox.setAlignment(Pos.CENTER);
         cardBox.getChildren().addAll(
-            buatCard("Target Kalori", targetKalori + " kkal", "#FF7043"),
-            buatCard("Target Protein", targetProtein + " g", "#42A5F5"),
-            buatCard("Target Lemak", targetLemak + " g", "#FFCA28"),
-            buatCard("Target Karbo", targetKarbo + " g", "#66BB6A")
+            buatCard("Target Kalori", targetKalori + " kkal", "#FF7F50"),
+            buatCard("Target Protein", targetProtein + " g", "#F88379"),
+            buatCard("Target Lemak", targetLemak + " g", "#FF69B4"),
+            buatCard("Target Karbo", targetKarbo + " g", "#FAA0A0")
         );
 
         Button inputBtn = new Button("Input Makanan");
         inputBtn.setPrefWidth(200);
         inputBtn.setPrefHeight(45);
-        inputBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; " +
+        inputBtn.setStyle("-fx-background-color: #F33A6A; -fx-text-fill: white; " +
                 "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
 
         Button historyBtn = new Button("Riwayat Harian");
         historyBtn.setPrefWidth(200);
         historyBtn.setPrefHeight(45);
-        historyBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; " +
+        historyBtn.setStyle("-fx-background-color: #E0115F; -fx-text-fill: white; " +
                 "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
 
         Button logoutBtn = new Button("Logout");
         logoutBtn.setPrefWidth(200);
         logoutBtn.setPrefHeight(45);
-        logoutBtn.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; " +
+        logoutBtn.setStyle("-fx-background-color: #DC143C; -fx-text-fill: white; " +
                 "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
+        
+        Button tambahMakananBtn = new Button("Usul Makanan/Minuman Baru");
+        tambahMakananBtn.setPrefWidth(200);
+        tambahMakananBtn.setPrefHeight(45);
+        tambahMakananBtn.setStyle("-fx-background-color: #F19CBB; -fx-text-fill: white; " +
+                "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
+        
+        Button gantiTargetBtn = new Button("Ganti Target");
+        gantiTargetBtn.setPrefWidth(200);
+        gantiTargetBtn.setPrefHeight(45);
+        gantiTargetBtn.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; " +
+                "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
+
+        gantiTargetBtn.setOnAction(e -> {
+            new GoalSelectionView(user, stage).show();
+        });
+
+        tambahMakananBtn.setOnAction(e -> {
+            UserAddFoodView uafv = new UserAddFoodView(user, stage);
+            uafv.show();
+        });
 
         inputBtn.setOnAction(e -> {
             FoodInputView fiv = new FoodInputView(user, stage);
@@ -95,7 +97,7 @@ public class DashboardView {
 
         HBox btnBox = new HBox(15);
         btnBox.setAlignment(Pos.CENTER);
-        btnBox.getChildren().addAll(inputBtn, historyBtn, logoutBtn);
+        btnBox.getChildren().addAll(inputBtn, historyBtn, tambahMakananBtn, gantiTargetBtn, logoutBtn);
 
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
@@ -104,7 +106,7 @@ public class DashboardView {
         root.getChildren().addAll(namaLabel, subLabel, cardBox, btnBox);
 
         Scene scene = new Scene(root, 700, 400);
-        stage.setTitle("NutriTrack - Dashboard");
+        stage.setTitle("Piring Nadi - Dashboard");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

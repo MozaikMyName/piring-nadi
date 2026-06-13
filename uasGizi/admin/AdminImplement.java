@@ -1,8 +1,10 @@
-package uasGizi;
+package uasGizi.admin;
 
+import uasGizi.admin.Admin;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import uasGizi.DBConnection;
 
 public class AdminImplement implements AdminInterface {
     @Override

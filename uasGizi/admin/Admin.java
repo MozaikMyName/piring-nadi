@@ -1,25 +1,12 @@
-package uasGizi;
+package uasGizi.admin;
 
-public class Admin {
-    private int id;
+import uasGizi.BaseEntity;
+
+public class Admin extends BaseEntity {
     private String username;
     private String password;
     
     public Admin() {}
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * @return the username
@@ -49,5 +36,8 @@ public class Admin {
         this.password = password;
     }
     
-    
+    @Override
+    public String getInfo() {
+        return "Admin: " + username;
+    }
 }

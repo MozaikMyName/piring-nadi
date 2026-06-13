@@ -1,4 +1,4 @@
-package uasGizi;
+package uasGizi.log;
 
 public class LogDetail {
     private String tanggal;

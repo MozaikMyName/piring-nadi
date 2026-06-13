@@ -1,0 +1,11 @@
+============================
+RIWAYAT ASUPAN GIZI
+Nama  : Putri Tanjung
+============================
+Tanggal      | Makanan              | Berat  | Kalori  | Protein   | Lemak    | Karbo   
+--------------------------------------------------------------------
+2026-06-13   | Mie Gacoan           | 200g   | 600     | 100,0g    | 1600,0g  | 100,0g  
+2026-06-13   | salad dada ayam      | 400g   | 8000    | 600,0g    | 0,0g     | 0,0g    
+============================
+Total Semua: 8600 kkal | Protein: 700,0g | Lemak: 1600,0g | Karbo: 100,0g
+============================

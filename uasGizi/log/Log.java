@@ -1,29 +1,15 @@
-package uasGizi;
+package uasGizi.log;
 
 import java.sql.Date;
+import uasGizi.BaseEntity;
 
-public class Log {
-    private int id;
+public class Log extends BaseEntity {
     private int userId;
     private int makananId;
     private Date tanggal;
     private float beratGram;
     
     public Log() {}
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * @return the userId
@@ -81,5 +67,8 @@ public class Log {
         this.beratGram = beratGram;
     }
 
-    
+    @Override
+    public String getInfo() {
+        return "Log ID: " + id + " | User: " + userId + " | Makanan: " + makananId;
+    }
 }

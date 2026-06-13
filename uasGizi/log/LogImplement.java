@@ -1,4 +1,4 @@
-package uasGizi;
+package uasGizi.log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,13 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import uasGizi.DBConnection;
 
 public class LogImplement implements LogInterface {
 
     @Override
     public Log insert(Log l) throws SQLException {
         PreparedStatement st = DBConnection.getConnection().prepareStatement(
-            "INSERT INTO log_harian VALUES(0,?,?,?,?)");
+            "INSERT INTO log_harian (user_id, makanan_id, tanggal, berat_gram, catatan_gizi) VALUES(?,?,?,?,NULL)");
         st.setInt(1, l.getUserId());
         st.setInt(2, l.getMakananId());
         st.setDate(3, l.getTanggal());

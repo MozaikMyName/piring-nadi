@@ -1,7 +1,8 @@
-package uasGizi;
+package uasGizi.user;
 
-public class User {
-    private int id;
+import uasGizi.BaseEntity;
+
+public class User extends BaseEntity {
     private String username;
     private String password;
     private String nama;
@@ -10,22 +11,10 @@ public class User {
     private float tinggiCm;
     private String gender;
     private String aktivitas;
+    private String tujuan;
+    private float targetKalori;
     
     public User() {}
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * @return the username
@@ -139,5 +128,36 @@ public class User {
         this.aktivitas = aktivitas;
     }
     
-    
+    @Override
+    public String getInfo() {
+        return "User: " + nama + " | Username: " + username;
+    }
+
+    /**
+     * @return the tujuan
+     */
+    public String getTujuan() {
+        return tujuan;
+    }
+
+    /**
+     * @param tujuan the tujuan to set
+     */
+    public void setTujuan(String tujuan) {
+        this.tujuan = tujuan;
+    }
+
+    /**
+     * @return the targetKalori
+     */
+    public float getTargetKalori() {
+        return targetKalori;
+    }
+
+    /**
+     * @param targetKalori the targetKalori to set
+     */
+    public void setTargetKalori(float targetKalori) {
+        this.targetKalori = targetKalori;
+    }
 }

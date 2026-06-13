@@ -1,5 +1,10 @@
 package uasGizi;
 
+import uasGizi.user.User;
+import uasGizi.makanan.MakananImplement;
+import uasGizi.makanan.Makanan;
+import uasGizi.log.Log;
+import uasGizi.log.LogImplement;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,38 +30,65 @@ public class FoodInputView {
     public void show() {
         Label titleLabel = new Label("Input Makanan Hari Ini");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        titleLabel.setTextFill(Color.web("#2E7D32"));
+        titleLabel.setTextFill(Color.web("#F19CBB"));
+        
+        Label infoLabel = new Label("Pilih makanan untuk lihat info gizi");
+        infoLabel.setFont(Font.font("Arial", 12));
+        infoLabel.setTextFill(Color.web("#888888"));
+        
+        TextField searchField = new TextField();
+        searchField.setPromptText("Cari makanan...");
+        searchField.setPrefHeight(40);
+        searchField.setPrefWidth(300);
+        searchField.setStyle("-fx-background-radius: 8;");
 
-        ComboBox<String> makananBox = new ComboBox<>();
-        makananBox.setPromptText("Pilih Makanan");
-        makananBox.setPrefWidth(300);
-        makananBox.setPrefHeight(40);
+        ListView<String> searchResult = new ListView<>();
+        searchResult.setPrefHeight(150);
+        searchResult.setPrefWidth(300);
+        searchResult.setVisible(false);
 
         List<Makanan> listMakanan = null;
         try {
             MakananImplement mi = new MakananImplement();
             listMakanan = mi.getAll();
-            for (Makanan m : listMakanan) {
-                makananBox.getItems().add(m.getId() + " - " + m.getNama());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         final List<Makanan> finalListMakanan = listMakanan;
-
-        Label infoLabel = new Label("Pilih makanan untuk lihat info gizi");
-        infoLabel.setFont(Font.font("Arial", 12));
-        infoLabel.setTextFill(Color.web("#888888"));
-
-        makananBox.setOnAction(e -> {
-            int idx = makananBox.getSelectionModel().getSelectedIndex();
-            if (idx >= 0 && finalListMakanan != null) {
-                Makanan m = finalListMakanan.get(idx);
-                infoLabel.setText(String.format(
-                    "Per 100g — Kalori: %.0f kkal | Protein: %.1fg | Lemak: %.1fg | Karbo: %.1fg",
-                    m.getKalori(), m.getProtein(), m.getLemak(), m.getKarbohidrat()
-                ));
+        final Makanan[] selectedMakanan = {null};
+        
+        searchField.setOnKeyReleased(e -> {
+            String keyword = searchField.getText().toLowerCase();
+            searchResult.getItems().clear();
+            if (!keyword.isEmpty() && finalListMakanan != null) {
+                for (Makanan m : finalListMakanan) {
+                    if (m.getNama().toLowerCase().contains(keyword)) {
+                        searchResult.getItems().add(m.getId() + " - " + m.getNama());
+                    }
+                }
+                searchResult.setVisible(!searchResult.getItems().isEmpty());
+            } else {
+                searchResult.setVisible(false);
+            }
+        });
+        
+        searchResult.setOnMouseClicked(e -> {
+            String selected = searchResult.getSelectionModel().getSelectedItem();
+            if (selected != null && finalListMakanan != null) {
+                int id = Integer.parseInt(selected.split(" - ")[0]);
+                for (Makanan m : finalListMakanan) {
+                    if (m.getId() == id) {
+                        selectedMakanan[0] = m;
+                        searchField.setText(m.getNama());
+                        infoLabel.setText(String.format(
+                            "Per 100g — Kalori: %.0f kkal | Protein: %.1fg | Lemak: %.1fg | Karbo: %.1fg",
+                            m.getKalori(), m.getProtein(), m.getLemak(), m.getKarbohidrat()
+                        ));
+                        break;
+                    }
+                }
+                searchResult.setVisible(false);
             }
         });
 
@@ -71,11 +103,10 @@ public class FoodInputView {
         previewLabel.setTextFill(Color.web("#FF7043"));
 
         beratField.setOnKeyReleased(e -> {
-            int idx = makananBox.getSelectionModel().getSelectedIndex();
-            if (idx >= 0 && finalListMakanan != null && !beratField.getText().isEmpty()) {
+            if (selectedMakanan[0] != null && !beratField.getText().isEmpty()) {
                 try {
                     float berat = Float.parseFloat(beratField.getText());
-                    Makanan m = finalListMakanan.get(idx);
+                    Makanan m = selectedMakanan[0];
                     float kalori = m.getKalori() * berat / 100;
                     float protein = m.getProtein() * berat / 100;
                     float lemak = m.getLemak() * berat / 100;
@@ -93,7 +124,7 @@ public class FoodInputView {
         Button simpanBtn = new Button("Simpan Log");
         simpanBtn.setPrefWidth(300);
         simpanBtn.setPrefHeight(40);
-        simpanBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; " +
+        simpanBtn.setStyle("-fx-background-color: #F05F80; -fx-text-fill: white; " +
                 "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
 
         Button backBtn = new Button("Kembali ke Dashboard");
@@ -106,8 +137,7 @@ public class FoodInputView {
         msgLabel.setTextFill(Color.web("#4CAF50"));
 
         simpanBtn.setOnAction(e -> {
-            int idx = makananBox.getSelectionModel().getSelectedIndex();
-            if (idx < 0) {
+            if (selectedMakanan[0] == null) {
                 msgLabel.setTextFill(Color.RED);
                 msgLabel.setText("Pilih makanan dulu!");
                 return;
@@ -118,7 +148,7 @@ public class FoodInputView {
                 return;
             }
             try {
-                Makanan m = finalListMakanan.get(idx);
+                Makanan m = selectedMakanan[0];
                 Log l = new Log();
                 l.setUserId(user.getId());
                 l.setMakananId(m.getId());
@@ -128,12 +158,14 @@ public class FoodInputView {
                 LogImplement li = new LogImplement();
                 li.insert(l);
 
-                msgLabel.setTextFill(Color.web("#4CAF50"));
+                msgLabel.setTextFill(Color.web("#F05F80"));
                 msgLabel.setText("Log berhasil disimpan!");
-                makananBox.getSelectionModel().clearSelection();
+                searchField.clear();
                 beratField.clear();
                 previewLabel.setText("");
                 infoLabel.setText("Pilih makanan untuk lihat info gizi");
+                selectedMakanan[0] = null;
+                searchResult.setVisible(false);
             } catch (Exception ex) {
                 msgLabel.setTextFill(Color.RED);
                 msgLabel.setText("Error: " + ex.getMessage());
@@ -151,7 +183,7 @@ public class FoodInputView {
         card.setMaxWidth(420);
         card.setStyle("-fx-background-color: white; -fx-background-radius: 16; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 4);");
-        card.getChildren().addAll(titleLabel, makananBox, infoLabel,
+        card.getChildren().addAll(titleLabel, searchField, searchResult, infoLabel,
                 beratField, previewLabel, simpanBtn, backBtn, msgLabel);
 
         StackPane root = new StackPane(card);

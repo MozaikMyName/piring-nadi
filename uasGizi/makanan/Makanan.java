@@ -1,28 +1,19 @@
-package uasGizi;
+package uasGizi.makanan;
 
-public class Makanan {
-    private int id;
+import uasGizi.BaseEntity;
+
+public class Makanan extends BaseEntity {
     private String nama;
     private float kalori;
     private float protein;
     private float lemak;
     private float karbohidrat;
+    private String status;
+    private String ditambahOleh;
+    private int userId;
+    private String alasanTolak;
     
     public Makanan() {}
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * @return the nama
@@ -94,5 +85,64 @@ public class Makanan {
         this.karbohidrat = karbohidrat;
     }
     
-    
+    @Override
+    public String getInfo() {
+        return "Makanan: " + nama + " | Kalori: " + kalori + " kkal";
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the ditambahOleh
+     */
+    public String getDitambahOleh() {
+        return ditambahOleh;
+    }
+
+    /**
+     * @param ditambahOleh the ditambahOleh to set
+     */
+    public void setDitambahOleh(String ditambahOleh) {
+        this.ditambahOleh = ditambahOleh;
+    }
+
+    /**
+     * @return the userId
+     */
+    public int getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * @return the alasanTolak
+     */
+    public String getAlasanTolak() {
+        return alasanTolak;
+    }
+
+    /**
+     * @param alasanTolak the alasanTolak to set
+     */
+    public void setAlasanTolak(String alasanTolak) {
+        this.alasanTolak = alasanTolak;
+    }
 }
