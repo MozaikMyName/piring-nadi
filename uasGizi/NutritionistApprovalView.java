@@ -13,23 +13,27 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.List;
+import javafx.scene.Node;
 
 public class NutritionistApprovalView {
     private AhliGizi ahliGizi;
     private Stage stage;
+    private VBox mainNode;
 
     public NutritionistApprovalView(AhliGizi ahliGizi, Stage stage) {
         this.ahliGizi = ahliGizi;
         this.stage = stage;
+        initComponent();
     }
 
-    public void show() {
+    private void initComponent() {
         Label titleLabel = new Label("Verifikasi Makanan Pending");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         titleLabel.setTextFill(Color.web("#9C27B0"));
 
         TableView<Makanan> table = new TableView<>();
-        table.setPrefHeight(350);
+        table.setPrefHeight(400);
+        VBox.setVgrow(table, Priority.ALWAYS);
 
         TableColumn<Makanan, Integer> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
@@ -74,7 +78,6 @@ public class NutritionistApprovalView {
                 approveBtn.setOnAction(e -> {
                     Makanan m = getTableView().getItems().get(getIndex());
 
-                    // Dialog isi data gizi
                     Dialog<ButtonType> dialog = new Dialog<>();
                     dialog.setTitle("Approve - " + m.getNama());
                     dialog.setHeaderText("Isi/koreksi data gizi per 100g:");
@@ -152,22 +155,15 @@ public class NutritionistApprovalView {
             System.out.println("Error: " + e.getMessage());
         }
 
-        Button backBtn = new Button("Kembali");
-        backBtn.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; " +
-                "-fx-background-radius: 8; -fx-cursor: hand;");
-        backBtn.setOnAction(e -> {
-            new NutritionistView(ahliGizi).show(stage);
-        });
-
-        VBox root = new VBox(15);
-        root.setPadding(new Insets(30));
-        root.setStyle("-fx-background-color: #F9F0FF;");
-        root.getChildren().addAll(titleLabel, table, backBtn);
-
-        Scene scene = new Scene(root, 800, 550);
-        stage.setTitle("Piring Nadi - Verifikasi Makanan");
-        stage.setScene(scene);
-        stage.setResizable(true);
-        stage.show();
+        mainNode = new VBox(20);
+        mainNode.setPadding(new Insets(35));
+        mainNode.setAlignment(Pos.TOP_LEFT);
+        mainNode.setStyle("-fx-background-color: #FAFAFB;");
+        
+        mainNode.getChildren().addAll(titleLabel, table);
+    }
+    
+    public Node getViewNode() {
+        return this.mainNode;
     }
 }

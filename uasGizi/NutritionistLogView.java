@@ -22,16 +22,19 @@ public class NutritionistLogView {
     private User user;
     private AhliGizi ahliGizi;
     private Stage stage;
+    private VBox root;
+    private Runnable onBackAction;
 
-    public NutritionistLogView(User user, AhliGizi ahliGizi, Stage stage) {
+    public NutritionistLogView(User user, AhliGizi ahliGizi, Runnable onBackAction) {
         this.user = user;
         this.ahliGizi = ahliGizi;
-        this.stage = stage;
+        this.onBackAction = onBackAction;
+        initComponent();
     }
 
-    public void show() {
+    private void initComponent() {
         Label titleLabel = new Label("Log Makan - " + user.getNama());
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 20));
         titleLabel.setTextFill(Color.web("#9C27B0"));
 
         Label infoLabel = new Label("Usia: " + user.getUsia() +
@@ -43,6 +46,7 @@ public class NutritionistLogView {
 
         TableView<uasGizi.log.LogDetail> table = new TableView<>();
         table.setPrefHeight(350);
+        VBox.setVgrow(table, Priority.ALWAYS);
 
         TableColumn<uasGizi.log.LogDetail, String> tanggalCol = new TableColumn<>("Tanggal");
         tanggalCol.setCellValueFactory(new PropertyValueFactory<>("tanggal"));
@@ -76,7 +80,7 @@ public class NutritionistLogView {
                 kaloriCol, proteinCol, lemakCol, karboCol);
 
         Label totalLabel = new Label("");
-        totalLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        totalLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
         totalLabel.setTextFill(Color.web("#9C27B0"));
 
         try {
@@ -97,13 +101,9 @@ public class NutritionistLogView {
                         float kar = m.getKarbohidrat() * berat / 100;
 
                         table.getItems().add(new uasGizi.log.LogDetail(
-                            l.getTanggal().toString(),
-                            m.getNama(),
-                            String.format("%.0f", berat),
-                            String.format("%.0f", kal),
-                            String.format("%.1f", pro),
-                            String.format("%.1f", lem),
-                            String.format("%.1f", kar)
+                            l.getTanggal().toString(), m.getNama(),
+                            String.format("%.0f", berat), String.format("%.0f", kal),
+                            String.format("%.1f", pro), String.format("%.1f", lem), String.format("%.1f", kar)
                         ));
 
                         totalKalori += kal;
@@ -114,33 +114,26 @@ public class NutritionistLogView {
                     }
                 }
             }
-
-            totalLabel.setText(String.format(
-                "Total: %.0f kkal | Protein: %.1fg | Lemak: %.1fg | Karbo: %.1fg",
-                totalKalori, totalProtein, totalLemak, totalKarbo
-            ));
-
+            totalLabel.setText(String.format("Total: %.0f kkal | Protein: %.1fg | Lemak: %.1fg | Karbo: %.1fg", totalKalori, totalProtein, totalLemak, totalKarbo));
         } catch (Exception e) {
             totalLabel.setText("Error: " + e.getMessage());
         }
 
         Button backBtn = new Button("Kembali");
-        backBtn.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; " +
-                "-fx-background-radius: 8; -fx-cursor: hand;");
+        backBtn.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
         backBtn.setOnAction(e -> {
-            NutritionistView nv = new NutritionistView(ahliGizi);
-            nv.show(stage);
+            if (onBackAction != null) {
+                onBackAction.run();
+            }
         });
 
-        VBox root = new VBox(12);
+        root = new VBox(12);
         root.setPadding(new Insets(30));
         root.setStyle("-fx-background-color: #F9F0FF;");
         root.getChildren().addAll(titleLabel, infoLabel, table, totalLabel, backBtn);
-
-        Scene scene = new Scene(root, 750, 550);
-        stage.setTitle("Piring Nadi - Log User");
-        stage.setScene(scene);
-        stage.setResizable(true);
-        stage.show();
+    }
+    
+    public VBox getViewNode() {
+        return this.root;
     }
 }

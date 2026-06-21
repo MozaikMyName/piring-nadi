@@ -16,7 +16,17 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.shape.Rectangle;
 
 public class RegisterView {
+    
     public void show(Stage stage) {
+        Scene scene = stage.getScene();
+        if (scene == null) {
+            scene = new Scene(new StackPane(), 900, 650);
+            stage.setScene(scene);
+        }
+        show(stage, scene);
+    }
+
+    public void show(Stage stage, Scene primaryScene) {
         
         Label titleLabel = new Label("Daftar Akun");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
@@ -151,7 +161,7 @@ public class RegisterView {
 
         backBtn.setOnAction(e -> {
             LoginView lv = new LoginView();
-            lv.show(stage);
+            lv.show(stage, primaryScene);
         });
 
         VBox formBox = new VBox(12);
@@ -224,10 +234,9 @@ public class RegisterView {
         StackPane root = new StackPane(bgView, card);
         StackPane.setAlignment(card, Pos.CENTER);
 
-        Scene scene = new Scene(root, 900, 650);
+        primaryScene.setRoot(root);
+
         stage.setTitle("Piring Nadi - Daftar");
-        stage.setScene(scene);
-        stage.setResizable(true);
         stage.setMinWidth(850);
         stage.setMinHeight(650);
         stage.show();

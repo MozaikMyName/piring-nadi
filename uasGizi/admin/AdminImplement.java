@@ -1,6 +1,7 @@
 package uasGizi.admin;
 
 import uasGizi.admin.Admin;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,5 +22,16 @@ public class AdminImplement implements AdminInterface {
         }
         DBConnection.conn.close();
         return a;
+    }
+    
+    @Override
+    public void update(Admin a) throws SQLException {
+        PreparedStatement st = DBConnection.getConnection().prepareStatement(
+            "UPDATE admin SET username=?, password=? WHERE id=?");
+        st.setString(1, a.getUsername());
+        st.setString(2, a.getPassword());
+        st.setInt(3, a.getId());
+        st.executeUpdate();
+        DBConnection.conn.close();
     }
 }

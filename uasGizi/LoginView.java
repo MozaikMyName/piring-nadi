@@ -1,5 +1,6 @@
 package uasGizi;
 
+import java.sql.SQLException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,6 +18,15 @@ import javafx.scene.shape.Rectangle;
 public class LoginView {
     
     public void show(Stage stage) {
+        Scene scene = stage.getScene();
+        if (scene == null) {
+            scene = new Scene(new StackPane(), 900, 650);
+            stage.setScene(scene);
+        }
+        show(stage, scene);
+    }
+    
+    public void show(Stage stage, Scene primaryScene) {
         Label titleLabel = new Label("Piring Nadi");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
         titleLabel.setTextFill(Color.web("#C75B7A"));
@@ -72,40 +82,51 @@ public class LoginView {
         ));
         
         loginBtn.setOnAction(e -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-            if (username.isEmpty() || password.isEmpty()) {
-                msgLabel.setText("Username dan password tidak boleh kosong!");
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            msgLabel.setText("Username dan password tidak boleh kosong!");
+            return;
+        }
+
+        try {
+            uasGizi.admin.AdminImplement ai = new uasGizi.admin.AdminImplement();
+            uasGizi.admin.Admin a = ai.getByUsername(username);
+            if (a != null && a.getPassword().equals(password)) {
+                new AdminDashboardView(a).show(stage);
                 return;
             }
-            try {
-                uasGizi.admin.AdminImplement ai = new uasGizi.admin.AdminImplement();
-                uasGizi.admin.Admin a = ai.getByUsername(username);
-                if (a != null && a.getPassword().equals(password)) {
-                    new AdminDashboardView(a).show(stage);
-                    return;
-                }
-                uasGizi.ahliGizi.AhliGiziImplement agi = new uasGizi.ahliGizi.AhliGiziImplement();
-                uasGizi.ahliGizi.AhliGizi ag = agi.getByUsername(username);
-                if (ag != null && ag.getPassword().equals(password)) {
-                    new NutritionistView(ag).show(stage);
-                    return;
-                }
-                uasGizi.user.UserImplement ui = new uasGizi.user.UserImplement();
-                uasGizi.user.User u = ui.getByUsername(username);
-                if (u != null && u.getPassword().equals(password)) {
-                    if (u.getTujuan() == null || u.getTujuan().isEmpty()) {
-                        new GoalSelectionView(u, stage).show();
-                    } else {
-                        new DashboardView(u).show(stage);
-                    }
-                    return;
-                }
-                msgLabel.setText("Username atau password salah!");
-            } catch (Exception ex) {
-                msgLabel.setText("Error: " + ex.getMessage());
+
+            uasGizi.ahliGizi.AhliGiziImplement agi = new uasGizi.ahliGizi.AhliGiziImplement();
+            uasGizi.ahliGizi.AhliGizi ag = agi.getByUsername(username);
+            if (ag != null && ag.getPassword().equals(password)) {
+                new NutritionistView(ag).show(stage);
+                return;
             }
-        });
+
+            uasGizi.user.UserImplement ui = new uasGizi.user.UserImplement();
+            uasGizi.user.User u = ui.getByUsername(username);
+            if (u.getTujuan() == null || u.getTujuan().isEmpty()) {
+                GoalSelectionView gsv = new GoalSelectionView(u, stage, () -> {
+                    try {
+                        new DashboardView(u).show(stage);
+                    } catch (SQLException ex) {
+                        System.getLogger(LoginView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                    }
+                }, null);
+                gsv.show();
+            } else {
+                new DashboardView(u).show(stage);
+            }
+
+            msgLabel.setText("Username atau password salah!");
+
+        } catch (Exception ex) {
+            ex.printStackTrace(); 
+            msgLabel.setText("Terjadi kesalahan sistem. Cek konsol!");
+        }
+    });
         
         Button registerBtn = new Button("Belum punya akun? Daftar");
         registerBtn.setPrefWidth(360); 
@@ -117,14 +138,16 @@ public class LoginView {
             "-fx-background-color: #F05F80; -fx-text-fill: white; " +
             "-fx-background-radius: 10; -fx-font-size: 14; -fx-cursor: hand;"
         ));
+        
         registerBtn.setOnMouseExited(e -> registerBtn.setStyle(
             "-fx-background-color: transparent; -fx-text-fill: #F19CBB; " +
             "-fx-border-color: #F19CBB; -fx-border-radius: 8; " +
             "-fx-background-radius: 10; -fx-font-size: 14; -fx-cursor: hand;"
         ));
+        
         registerBtn.setOnAction(e -> {
             RegisterView rv = new RegisterView();
-            rv.show(stage);
+            rv.show(stage, primaryScene);
         });
         
         VBox formBox = new VBox(12);
@@ -189,13 +212,12 @@ public class LoginView {
         bgView.fitWidthProperty().bind(stage.widthProperty());
         bgView.fitHeightProperty().bind(stage.heightProperty());
 
-        StackPane root = new StackPane(bgView,card);
+        StackPane root = new StackPane(bgView, card);
         StackPane.setAlignment(card, Pos.CENTER);
 
-        Scene scene = new Scene(root, 900, 650);
+        primaryScene.setRoot(root); 
+    
         stage.setTitle("Piring Nadi - Login");
-        stage.setScene(scene);
-        stage.setResizable(true);
         stage.setMinWidth(850);
         stage.setMinHeight(650);
         stage.show();

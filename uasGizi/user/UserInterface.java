@@ -9,4 +9,5 @@ public interface UserInterface {
     void update(User u) throws SQLException;
     void delete(int id) throws SQLException;
     List<User> getAll() throws SQLException;
+    User getById(int id) throws SQLException;
 }

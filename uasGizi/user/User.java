@@ -13,6 +13,7 @@ public class User extends BaseEntity {
     private String aktivitas;
     private String tujuan;
     private float targetKalori;
+    private String catatanAhliGizi;
     
     public User() {}
 
@@ -159,5 +160,19 @@ public class User extends BaseEntity {
      */
     public void setTargetKalori(float targetKalori) {
         this.targetKalori = targetKalori;
+    }
+
+    /**
+     * @return the catatanAhliGizi
+     */
+    public String getCatatanAhliGizi() {
+        return catatanAhliGizi;
+    }
+
+    /**
+     * @param catatanAhliGizi the catatanAhliGizi to set
+     */
+    public void setCatatanAhliGizi(String catatanAhliGizi) {
+        this.catatanAhliGizi = catatanAhliGizi;
     }
 }

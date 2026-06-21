@@ -7,27 +7,24 @@ import uasGizi.log.Log;
 import uasGizi.log.LogImplement;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import javafx.scene.Node;
 
 public class FoodInputView {
     private User user;
-    private Stage stage;
-    
-    public FoodInputView(User user, Stage stage) {
+
+    public FoodInputView(User user) {
         this.user = user;
-        this.stage = stage;
     }
     
-    public void show() {
+    public Node getView() {
         Label titleLabel = new Label("Input Makanan Hari Ini");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         titleLabel.setTextFill(Color.web("#F19CBB"));
@@ -39,12 +36,12 @@ public class FoodInputView {
         TextField searchField = new TextField();
         searchField.setPromptText("Cari makanan...");
         searchField.setPrefHeight(40);
-        searchField.setPrefWidth(300);
+        searchField.setMaxWidth(400);
         searchField.setStyle("-fx-background-radius: 8;");
 
         ListView<String> searchResult = new ListView<>();
         searchResult.setPrefHeight(150);
-        searchResult.setPrefWidth(300);
+        searchResult.setMaxWidth(400);
         searchResult.setVisible(false);
 
         List<Makanan> listMakanan = null;
@@ -95,8 +92,8 @@ public class FoodInputView {
         TextField beratField = new TextField();
         beratField.setPromptText("Berat yang dimakan (gram)");
         beratField.setPrefHeight(40);
-        beratField.setPrefWidth(300);
-        beratField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8;");
+        beratField.setMaxWidth(400);
+        beratField.setStyle("-fx-background-radius: 8;");
 
         Label previewLabel = new Label("");
         previewLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
@@ -122,29 +119,17 @@ public class FoodInputView {
         });
 
         Button simpanBtn = new Button("Simpan Log");
-        simpanBtn.setPrefWidth(300);
+        simpanBtn.setPrefWidth(400);
         simpanBtn.setPrefHeight(40);
-        simpanBtn.setStyle("-fx-background-color: #F05F80; -fx-text-fill: white; " +
-                "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
-
-        Button backBtn = new Button("Kembali ke Dashboard");
-        backBtn.setPrefWidth(300);
-        backBtn.setPrefHeight(40);
-        backBtn.setStyle("-fx-background-color: #9E9E9E; -fx-text-fill: white; " +
-                "-fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
+        simpanBtn.setStyle("-fx-background-color: #F05F80; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-size: 14; -fx-cursor: hand;");
 
         Label msgLabel = new Label("");
         msgLabel.setTextFill(Color.web("#4CAF50"));
 
         simpanBtn.setOnAction(e -> {
-            if (selectedMakanan[0] == null) {
+            if (selectedMakanan[0] == null || beratField.getText().isEmpty()) {
                 msgLabel.setTextFill(Color.RED);
-                msgLabel.setText("Pilih makanan dulu!");
-                return;
-            }
-            if (beratField.getText().isEmpty()) {
-                msgLabel.setTextFill(Color.RED);
-                msgLabel.setText("Isi berat gram dulu!");
+                msgLabel.setText("Pilih makanan dan isi berat dengan benar!");
                 return;
             }
             try {
@@ -160,38 +145,20 @@ public class FoodInputView {
 
                 msgLabel.setTextFill(Color.web("#F05F80"));
                 msgLabel.setText("Log berhasil disimpan!");
-                searchField.clear();
-                beratField.clear();
-                previewLabel.setText("");
-                infoLabel.setText("Pilih makanan untuk lihat info gizi");
-                selectedMakanan[0] = null;
-                searchResult.setVisible(false);
             } catch (Exception ex) {
                 msgLabel.setTextFill(Color.RED);
                 msgLabel.setText("Error: " + ex.getMessage());
             }
         });
 
-        backBtn.setOnAction(e -> {
-            DashboardView dv = new DashboardView(user);
-            dv.show(stage);
-        });
-
         VBox card = new VBox(15);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(40));
-        card.setMaxWidth(420);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 16; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 4);");
+        card.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 16;");
+        
         card.getChildren().addAll(titleLabel, searchField, searchResult, infoLabel,
-                beratField, previewLabel, simpanBtn, backBtn, msgLabel);
+                beratField, previewLabel, simpanBtn, msgLabel);
 
-        StackPane root = new StackPane(card);
-        root.setStyle("-fx-background-color: #F0F4F0;");
-
-        Scene scene = new Scene(root, 550, 500);
-        stage.setTitle("NutriTrack - Input Makanan");
-        stage.setScene(scene);
-        stage.show();
+        return card; 
     }
 }

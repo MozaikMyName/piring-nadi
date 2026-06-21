@@ -48,6 +48,31 @@ public class UserImplement implements UserInterface {
             u.setAktivitas(rs.getString("aktivitas"));
             u.setTujuan(rs.getString("tujuan"));
             u.setTargetKalori(rs.getFloat("target_kalori"));
+            u.setCatatanAhliGizi(rs.getString("catatan_ahli_gizi"));
+        }
+        DBConnection.conn.close();
+        return u;
+    }
+    
+    
+    @Override
+    public User getById(int id) throws SQLException {
+        User u = null;
+        PreparedStatement st = DBConnection.getConnection().prepareStatement("SELECT * FROM user WHERE id=?");
+        st.setInt(1, id);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            u = new User();
+            u.setId(rs.getInt("id"));
+            u.setUsername(rs.getString("username"));
+            u.setNama(rs.getString("nama"));
+            u.setBeratKg(rs.getFloat("berat_kg"));
+            u.setTinggiCm(rs.getFloat("tinggi_cm"));
+            u.setGender(rs.getString("gender"));
+            u.setAktivitas(rs.getString("aktivitas"));
+            u.setTujuan(rs.getString("tujuan"));
+            u.setTargetKalori(rs.getFloat("target_kalori"));
+            u.setCatatanAhliGizi(rs.getString("catatan_ahli_gizi"));
         }
         DBConnection.conn.close();
         return u;
@@ -66,6 +91,15 @@ public class UserImplement implements UserInterface {
         st.setString(7, u.getTujuan());
         st.setFloat(8, u.getTargetKalori());
         st.setInt(9, u.getId());
+        st.executeUpdate();
+        DBConnection.conn.close();
+    }
+    
+    public void updateCatatanGizi(int userId, String catatan) throws SQLException {
+        String sql = "UPDATE user SET catatan_ahli_gizi = ? WHERE id = ?";
+        PreparedStatement st = DBConnection.getConnection().prepareStatement(sql);
+        st.setString(1, catatan);
+        st.setInt(2, userId);
         st.executeUpdate();
         DBConnection.conn.close();
     }

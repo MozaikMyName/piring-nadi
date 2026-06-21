@@ -1,0 +1,10 @@
+============================
+RIWAYAT ASUPAN GIZI
+Nama  : maimunah
+============================
+Tanggal      | Makanan              | Berat  | Kalori  | Protein   | Lemak    | Karbo   
+--------------------------------------------------------------------
+2026-06-15   | Mie Gacoan           | 300g   | 750     | 150,0g    | 2400,0g  | 150,0g  
+============================
+Total Semua: 750 kkal | Protein: 150,0g | Lemak: 2400,0g | Karbo: 150,0g
+============================

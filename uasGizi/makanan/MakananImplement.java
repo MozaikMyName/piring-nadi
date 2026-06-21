@@ -41,6 +41,7 @@ public class MakananImplement implements MakananInterface {
             m.setProtein(rs.getFloat("protein"));
             m.setLemak(rs.getFloat("lemak"));
             m.setKarbohidrat(rs.getFloat("karbohidrat"));
+            m.setStatus(rs.getString("status"));
             list.add(m);
         }
         DBConnection.conn.close();
@@ -50,14 +51,13 @@ public class MakananImplement implements MakananInterface {
     @Override
     public void update(Makanan m) throws SQLException {
         PreparedStatement st = DBConnection.getConnection().prepareStatement(
-        "UPDATE makanan SET nama=?, kalori=?, protein=?, lemak=?, karbohidrat=?, status=? WHERE id=?");
+        "UPDATE makanan SET nama=?, kalori=?, protein=?, lemak=?, karbohidrat=? WHERE id=?");
         st.setString(1, m.getNama());
         st.setFloat(2, m.getKalori());
         st.setFloat(3, m.getProtein());
         st.setFloat(4, m.getLemak());
         st.setFloat(5, m.getKarbohidrat());
-        st.setString(6, m.getStatus());
-        st.setInt(7, m.getId());
+        st.setInt(6, m.getId()); 
         st.executeUpdate();
         DBConnection.conn.close();
     }
